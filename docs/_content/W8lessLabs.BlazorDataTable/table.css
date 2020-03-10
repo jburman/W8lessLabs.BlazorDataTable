@@ -1,0 +1,174 @@
+﻿.w8less-theight {
+    height: 50vh;
+    overflow: auto;
+}
+
+.w8less-table {
+    width: 100%;
+    border: none;
+    border-collapse: collapse;
+    box-sizing: border-box;
+    border-spacing: 0;
+    empty-cells: show;
+    outline: 0;
+    table-layout: fixed;
+}
+
+.w8less-theader {
+    min-height: 2.5rem;
+}
+
+    .w8less-theader .sortable:hover {
+        background-color: #f3f3f3;
+    }
+
+    .w8less-theader .w8less-tcol {
+        border-bottom: solid 2px #afafaf;
+        padding: .25rem;
+        vertical-align: baseline;
+    }
+
+    /*.w8less-theader .w8less-tcol div:last-of-type {
+        width: 2.5rem;
+    }*/
+
+.w8less-title {
+    display: flex;
+    margin: .25rem .25rem .25rem .25rem;
+    overflow: hidden;
+    white-space: nowrap;
+}
+    .w8less-title div:first-of-type {
+        overflow: hidden;
+    }
+    .w8less-title div:last-of-type {
+        width: 100%;
+        text-overflow: ellipsis;
+    }
+
+.w8less-trow {
+    /*display: flex;*/
+}
+
+.w8less-tcol {
+    width: 8rem;
+}
+
+.w8less-tcol.expander {
+    padding: 0;
+    width: auto;
+}
+
+    .w8less-tcol .w8less-tcontent {
+        /*padding: .5rem 0 .25rem 0;*/
+        /*margin: .5rem 1rem .25rem 1rem;*/
+        padding: .25rem;
+        /*min-width: 3rem;*/
+    }
+
+.w8less-table td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.w8less-icon {
+    margin-left: 0.9rem;
+}
+
+.w8less-sa, .w8less-sd {
+    background-color: #f3f3f3;
+}
+
+.w8less-theader .w8less-sa, .w8less-theader .w8less-sd {
+    background-color: #dcdcdc;
+    border-bottom: solid 2px #bfbfbf;
+}
+
+.w8less-theader .w8less-ns .w8less-icon {
+    color: transparent;
+}
+
+.w8less-theader .w8less-sa:hover, .w8less-theader .w8less-sd:hover {
+    background-color: #dcdcdc;
+}
+
+.w8less-theader .sortable {
+    cursor: pointer;
+}
+
+.w8less-tbody {
+    /*height: 50vh;*/
+    overflow-y: scroll;
+}
+
+    .w8less-tbody .w8less-tcol {
+        border-bottom: solid 1px #dfdfdf;
+    }
+
+        /*.w8less-tbody .w8less-tcol.w8less-sa, .w8less-tbody .w8less-tcol.w8less-sd {
+            border-top: solid 1px #eaeaea;
+        }*/
+
+.w8less-tfooter {
+    display: flex;
+    border-top: solid 2px #9a9a9a;
+    height: 2.5rem;
+}
+
+    .w8less-tfooter > .footer-l, .footer-r {
+        flex: 1
+    }
+
+    .w8less-tfooter > div:last-child {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 6px;
+    }
+
+        .w8less-tfooter > div:last-child select {
+            min-width: 5rem;
+        }
+
+.w8less-paginator {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 6px;
+}
+
+.w8less-page {
+    border: solid 1px #dfdfdf;
+    padding: .5rem 1rem .25rem 1rem;
+    margin-right: 4px;
+    cursor: pointer;
+    width: 3.5rem;
+    text-align: center;
+}
+
+.w8less-page:hover {
+    background-color: #dfdfdf;
+}
+
+    .w8less-page.display {
+        cursor: default;
+    }
+        .w8less-page.display:hover {
+            background-color: transparent;
+        }
+
+    .w8less-page.active {
+        background-color: #d9d9ef;
+        border: solid 1px #afafaf;
+    }
+
+    .w8less-page.disabled {
+        cursor: default;
+        opacity: 0.4
+    }
+
+    .w8less-page.disabled:hover {
+        background-color: transparent;
+    }
+
+.w8less-page-display {
+    padding: .5rem 1rem .25rem 1rem;
+}
