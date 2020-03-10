@@ -76,6 +76,12 @@ namespace W8lessLabs.BlazorDataTable
         public IEnumerable<TEntity> ApplyPaging(IQueryable<TEntity> data) =>
             data.Skip((Page - 1) * PageSize).Take(PageSize);
 
+        public IEnumerable<TEntity> ApplySortsAndPaging(IEnumerable<TEntity> data) =>
+            ApplyPaging(ApplySorts(data));
+
+        public IEnumerable<TEntity> ApplySortsAndPaging(IQueryable<TEntity> data) =>
+            ApplyPaging(ApplySorts(data));
+
         public ReadDataResponse<TEntity> CreateResponse(IReadOnlyList<TEntity> data, int totalRecords) =>
             new ReadDataResponse<TEntity>(data.ToList(), totalRecords, Page, PageSize);
     }

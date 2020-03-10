@@ -1,6 +1,7 @@
 ﻿.w8less-theight {
     height: 50vh;
-    overflow: auto;
+    overflow-x: auto;
+    overflow-y: scroll;
 }
 
 .w8less-table {
@@ -12,6 +13,10 @@
     empty-cells: show;
     outline: 0;
     table-layout: fixed;
+}
+
+.w8less-header {
+    padding-right: 16px;
 }
 
 .w8less-theader {
@@ -28,7 +33,7 @@
         vertical-align: baseline;
     }
 
-    /*.w8less-theader .w8less-tcol div:last-of-type {
+/*.w8less-theader .w8less-tcol div:last-of-type {
         width: 2.5rem;
     }*/
 
@@ -38,9 +43,11 @@
     overflow: hidden;
     white-space: nowrap;
 }
+
     .w8less-title div:first-of-type {
         overflow: hidden;
     }
+
     .w8less-title div:last-of-type {
         width: 100%;
         text-overflow: ellipsis;
@@ -51,13 +58,13 @@
 }
 
 .w8less-tcol {
-    width: 8rem;
+    /*width: 8rem;*/
 }
 
-.w8less-tcol.expander {
-    padding: 0;
-    width: auto;
-}
+    .w8less-tcol.expander {
+        padding: 0;
+        width: auto;
+    }
 
     .w8less-tcol .w8less-tcontent {
         /*padding: .5rem 0 .25rem 0;*/
@@ -97,17 +104,11 @@
 }
 
 .w8less-tbody {
-    /*height: 50vh;*/
-    overflow-y: scroll;
 }
 
     .w8less-tbody .w8less-tcol {
         border-bottom: solid 1px #dfdfdf;
     }
-
-        /*.w8less-tbody .w8less-tcol.w8less-sa, .w8less-tbody .w8less-tcol.w8less-sd {
-            border-top: solid 1px #eaeaea;
-        }*/
 
 .w8less-tfooter {
     display: flex;
@@ -144,13 +145,18 @@
     text-align: center;
 }
 
-.w8less-page:hover {
-    background-color: #dfdfdf;
-}
+    .w8less-page.disabled {
+        opacity: 0.45;
+    }
+
+    .w8less-page:hover {
+        background-color: #dfdfdf;
+    }
 
     .w8less-page.display {
         cursor: default;
     }
+
         .w8less-page.display:hover {
             background-color: transparent;
         }
@@ -162,12 +168,11 @@
 
     .w8less-page.disabled {
         cursor: default;
-        opacity: 0.4
     }
 
-    .w8less-page.disabled:hover {
-        background-color: transparent;
-    }
+        .w8less-page.disabled:hover {
+            background-color: transparent;
+        }
 
 .w8less-page-display {
     padding: .5rem 1rem .25rem 1rem;

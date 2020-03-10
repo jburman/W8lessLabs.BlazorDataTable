@@ -1,27 +1,24 @@
 ﻿@page "/"
 @inject HttpClient Http
 
-<DataTable ReadData="ReadWeather" TEntity="WeatherForecast" PageSize="10" PaginatorStyle="PaginatorStyle.Simple" Height="50vh">
+<DataTable ReadData="ReadWeather" TEntity="WeatherForecast" PageSize="10" PaginatorStyle="PaginatorStyle.Simple">
     <DataCol Title="Date" 
              Property="((WeatherForecast e) => e.Date)"
-             Sortable="true" 
-             Width="20vw" />
+             Sortable="true" />
     
     <DataCol Title="Temp. (C)" 
              Property="((WeatherForecast e) => e.TemperatureC)"
-             Sortable="true"  
-             Width="15vw"
+             Sortable="true"
              CustomContentClass="text-right" />
     
     <DataCol Title="Temp. (F)" 
              Property="((WeatherForecast e) => e.TemperatureF)"
-             Sortable="true" 
-             Width="15vw"
+             Sortable="true"
              CustomContentClass="text-right" />
     
     <DataCol Title="Summary" 
-             Property="((WeatherForecast e) => e.Summary)" 
-             Width="15vw" />
+             Property="((WeatherForecast e) => e.Summary)"
+             Width="25vw" />@* Set a custom column Width *@
 </DataTable>
 
 @code
@@ -34,8 +31,8 @@
 
         var totalRecords = forecasts.Length;
 
-        var sortedRecords = request.ApplySorts(forecasts);
-        var resultRecords = request.ApplyPaging(sortedRecords);
+        var resultRecords = request.ApplyPaging(
+            request.ApplySorts(forecasts));
 
         return request.CreateResponse(resultRecords.ToList(), totalRecords);
     }
