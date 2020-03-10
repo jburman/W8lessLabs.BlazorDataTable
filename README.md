@@ -1,3 +1,55 @@
 # W8lessLabs.BlazorDataTable
 
 Super early alpha
+
+### A basic example
+
+```
+@page "/"
+@inject HttpClient Http
+
+<DataTable ReadData="ReadWeatherAsync" TEntity="WeatherForecast" PageSize="10" PaginatorStyle="PaginatorStyle.Simple">
+    <DataCol Title="Date" 
+             Property="((WeatherForecast e) => e.Date)"
+             Sortable="true" />
+    
+    <DataCol Title="Temp. (C)" 
+             Property="((WeatherForecast e) => e.TemperatureC)"
+             Sortable="true"
+             CustomContentClass="text-right" />
+    
+    <DataCol Title="Temp. (F)" 
+             Property="((WeatherForecast e) => e.TemperatureF)"
+             Sortable="true"
+             CustomContentClass="text-right" />
+    
+    <DataCol Title="Summary" 
+             Property="((WeatherForecast e) => e.Summary)"
+             Width="25vw" />@* Set a custom column Width *@
+</DataTable>
+
+@code
+{
+    private WeatherForecast[] forecasts;
+
+    public async Task<ReadDataResponse<WeatherForecast>> ReadWeatherAsync(ReadDataRequest<WeatherForecast> request)
+    {
+        forecasts = await Http.GetJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+        
+        var totalRecords = forecasts.Length;
+
+        return request.CreateResponse(
+            request.ApplySortsAndPaging(forecasts)
+                .ToList(), 
+            totalRecords);
+    }
+
+    public class WeatherForecast
+    {
+        public DateTime Date { get; set; }
+        public int TemperatureC { get; set; }
+        public string Summary { get; set; }
+        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    }
+}
+```
