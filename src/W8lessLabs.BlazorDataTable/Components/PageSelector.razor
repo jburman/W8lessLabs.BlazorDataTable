@@ -1,0 +1,46 @@
+﻿@namespace W8lessLabs.BlazorDataTable
+@typeparam TEntity
+<select class="w8less-pagesizes" @onchange="OnPageSizeChangedAsync">
+    @if (HasCustomPageSize)
+    {
+        <option value="@PageSize" selected>@PageSize</option>
+    }
+    @foreach (var pageSize in PageSizes)
+    {
+        if (pageSize == PageSize)
+        {
+            <option value="@pageSize" selected>@pageSize</option>
+        }
+        else
+        {
+            <option value="@pageSize">@pageSize</option>
+        }
+    }
+</select>
+
+@code 
+{
+    [CascadingParameter] public DataTable<TEntity> Table { get; set; }
+
+    private int[] PageSizes { get; set; }
+    private int PageSize { get; set; }
+    private bool HasCustomPageSize;
+
+    private async Task OnPageSizeChangedAsync(ChangeEventArgs args)
+    {
+        await Table.Process.OnPageSizeChanged(int.Parse(args.Value.ToString()));
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (PageSize != Table.Config.PageSize)
+        {
+            PageSize = Table.Config.PageSize;
+        }
+        if (PageSizes is null)
+        {
+            PageSizes = Table.Config.PageSizes;
+            HasCustomPageSize = !PageSizes.Contains(PageSize);
+        }
+    }
+}

@@ -1,0 +1,38 @@
+﻿@namespace W8lessLabs.BlazorDataTable
+@typeparam TEntity
+@if (Table?.Columns != null)
+{
+    <table role="grid" class="w8less-table" style="@(Table.Config.Width == string.Empty ? string.Empty : "width: " + Table.Config.Width)">
+        <thead role="rowgroup">
+            <tr role="row" class="w8less-theader">
+                @foreach (var col in Table.Columns)
+                {
+                    <th role="rowheader" class="w8less-tcol @col.HeaderClass()" style="@col.WidthStyle()" @onclick="@(async (ev) => await ColumnClickedAsync(col))">
+                        <div class="w8less-title">
+                            <div class="@(col.CustomHeaderClass is null ? string.Empty : col.CustomHeaderClass)">
+                                @col.Title
+                                @if (col.Sortable)
+                                {
+                                    <span class="@col.SortDirection.IconClass()"></span>
+                                }
+                            </div>
+                        </div>
+                    </th>
+                }
+                <th class="w8less-tcol expander"></th>
+            </tr>
+        </thead>
+    </table>
+}
+@code 
+{
+    [CascadingParameter] public DataTable<TEntity> Table { get; set; }
+
+    internal async Task ColumnClickedAsync(ColumnRenderInfo<TEntity> col)
+    {
+        if (col.Sortable)
+        {
+            await Table.Process.OnColumnClickedAsync(col);
+        }
+    }
+}

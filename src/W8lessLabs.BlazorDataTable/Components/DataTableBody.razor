@@ -1,0 +1,50 @@
+﻿@namespace W8lessLabs.BlazorDataTable
+@typeparam TEntity
+@inject ILogger<DataTableBody<TEntity>> Logger
+
+<tbody role="rowgroup" class="w8less-tbody">
+    @if (DataSource?.Result != null)
+    {
+        foreach (var record in Table.DataSource.Result.Data)
+        {
+            <tr role="row" class="w8less-trow">
+                @foreach (var col in Table.Columns)
+                {
+                    <td role="gridcell" class="w8less-tcol @col.CellClass()" style="@col.WidthStyle()">
+                        <div class="w8less-tcontent @(col.CustomContentClass ?? string.Empty) @(col.CustomContentClassCallback?.Invoke(record))">
+                            @if (col.IsCustom)
+                            {
+                                @col.ChildContent(record)
+                            }
+                            else
+                            {
+                                @if (col.RenderAsMarkup)
+                                {
+                                    @((MarkupString)col.Render(record))
+                                }
+                                else
+                                {
+                                    @col.Render(record)
+                                }
+                            }
+                        </div>
+                    </td>
+                }
+                <td class="w8less-tcol expander"></td>
+            </tr>
+        }
+    }
+</tbody>
+
+@code 
+{
+    [CascadingParameter] public DataTable<TEntity> Table { get; set; }
+
+    private DataTableSource<TEntity> DataSource { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (DataSource is null)
+            DataSource = Table.DataSource;
+    }
+}

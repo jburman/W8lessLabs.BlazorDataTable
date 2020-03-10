@@ -1,0 +1,27 @@
+﻿@namespace W8lessLabs.BlazorDataTable
+@typeparam TEntity
+
+<CascadingValue Value="@this">
+    @ChildContent
+</CascadingValue>
+
+@if (DataSource is null)
+{
+    <div class="w8less-loading">Loading...</div>
+}
+else
+{
+    <CascadingValue Value="@this">
+        <DataTableHeader TEntity="TEntity"></DataTableHeader>
+        <div class="w8less-theight" style="@(this.TableSizeStyle())">
+            <table role="grid" class="w8less-table">
+                <DataTableBody TEntity="TEntity"></DataTableBody>
+            </table>
+        </div>
+        <DataTableFooter TEntity="TEntity"></DataTableFooter>
+    </CascadingValue>
+}
+@code 
+{
+    [Parameter] public RenderFragment ChildContent { get; set; }
+}

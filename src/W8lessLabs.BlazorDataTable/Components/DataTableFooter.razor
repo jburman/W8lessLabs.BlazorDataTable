@@ -1,0 +1,15 @@
+﻿@namespace W8lessLabs.BlazorDataTable
+@typeparam TEntity
+<div class="w8less-tfooter" style="@(Table.Config.Width == string.Empty ? string.Empty : "width: " + Table.Config.Width)">
+    <div class="footer-l">
+        <Paginator TEntity="TEntity"></Paginator>
+    </div>
+    <div class="footer-r">
+        <PageSelector TEntity="TEntity"></PageSelector>
+    </div>
+</div>
+
+@code 
+{
+    [CascadingParameter] public DataTable<TEntity> Table { get; set; }
+}

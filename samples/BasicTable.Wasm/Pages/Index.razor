@@ -1,0 +1,53 @@
+﻿@page "/"
+@inject HttpClient Http
+
+<DataTable ReadData="ReadWeather" TEntity="WeatherForecast" PageSize="10" PaginatorStyle="PaginatorStyle.Simple" Height="50vh">
+    <DataCol Title="Date" 
+             Property="((WeatherForecast e) => e.Date)"
+             Sortable="true" 
+             Width="20vw" />
+    
+    <DataCol Title="Temp. (C)" 
+             Property="((WeatherForecast e) => e.TemperatureC)"
+             Sortable="true"  
+             Width="15vw"
+             CustomContentClass="text-right" />
+    
+    <DataCol Title="Temp. (F)" 
+             Property="((WeatherForecast e) => e.TemperatureF)"
+             Sortable="true" 
+             Width="15vw"
+             CustomContentClass="text-right" />
+    
+    <DataCol Title="Summary" 
+             Property="((WeatherForecast e) => e.Summary)" 
+             Width="15vw" />
+</DataTable>
+
+@code
+{
+    private WeatherForecast[] forecasts;
+
+    public async Task<ReadDataResponse<WeatherForecast>> ReadWeather(ReadDataRequest<WeatherForecast> request)
+    {
+        forecasts = await Http.GetJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+
+        var totalRecords = forecasts.Length;
+
+        var sortedRecords = request.ApplySorts(forecasts);
+        var resultRecords = request.ApplyPaging(sortedRecords);
+
+        return request.CreateResponse(resultRecords.ToList(), totalRecords);
+    }
+
+    public class WeatherForecast
+    {
+        public DateTime Date { get; set; }
+
+        public int TemperatureC { get; set; }
+
+        public string Summary { get; set; }
+
+        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    }
+}

@@ -1,0 +1,101 @@
+﻿@namespace W8lessLabs.BlazorDataTable
+@typeparam TEntity
+
+@if (Result != null)
+{
+    <div class="w8less-paginator">
+        @if (LastPage > 1)
+        {
+            if (Style == PaginatorStyle.Full)
+            {
+                if (1 < RangeStart)
+                {
+                    <div class="w8less-page @PageClass(1)" @onclick="@(async () => await OnPageClickedAsync(1))">1</div>
+                }
+                if (1 < RangeStart - 1)
+                {
+                    <div class="w8less-page display">...</div>
+                }
+                for (int i = RangeStart; i <= RangeEnd; i++)
+                {
+                    int nextPage = i;
+                    <div class="w8less-page @PageClass(i)" @onclick="@(async () => await OnPageClickedAsync(nextPage))">@i</div>
+                }
+                if (RangeEnd < LastPage - 1)
+                {
+                    <div class="w8less-page display">...</div>
+                }
+                if (RangeEnd < LastPage)
+                {
+                    <div class="w8less-page @PageClass(LastPage)" @onclick="@(async () => await OnPageClickedAsync(LastPage))">@LastPage</div>
+                }
+            }
+            else
+            {
+                if (CurrentPage == 1)
+                {
+                    <div class="w8less-page disabled"><span class="@RenderHelper.PageClass(isAscending: false)"></span></div>
+                }
+                else
+                {
+                    <div class="w8less-page" @onclick="@(async () => await OnPageClickedAsync(CurrentPage - 1))">
+                        <span class="@RenderHelper.PageClass(isAscending: false)"></span>
+                    </div>
+                }
+                if (CurrentPage < LastPage)
+                {
+                    <div class="w8less-page" @onclick="@(async () => await OnPageClickedAsync(CurrentPage + 1))">
+                        <span class="@RenderHelper.PageClass(isAscending: true)"></span>
+                    </div>
+                }
+                else
+                {
+                    <div class="w8less-page disabled"><span class="@RenderHelper.PageClass(isAscending: true)"></span></div>
+                }
+
+                <div class="w8less-page-display">Page: @CurrentPage of @LastPage</div>
+            }
+        }
+    </div>
+}
+
+@code 
+{
+    [CascadingParameter] public DataTable<TEntity> Table { get; set; }
+
+    private ReadDataResponse<TEntity> Result { get; set; }
+    private PaginatorStyle Style { get; set; }
+    private int CurrentPage { get; set; }
+
+    private const int TrailingPageCount = 1;
+    private const int LeadingPageCount = 3;
+
+    private int RangeStart = 1;
+    private int RangeEnd = 1;
+    private int LastPage = 1;
+
+    private string PageClass(int page)
+    {
+        if (page == CurrentPage)
+            return "active";
+        else
+            return string.Empty;
+    }
+
+    private async Task OnPageClickedAsync(int page)
+    {
+        if (page != CurrentPage)
+            await Table.Process.PageChanged.InvokeAsync(page);
+    }
+
+    protected override void OnParametersSet()
+    {
+        Result = Table.DataSource.Result;
+        Style = Table.PaginatorStyle;
+        CurrentPage = Table.Page;
+        LastPage = Result.TotalPages;
+
+        RangeStart = Math.Max(1, CurrentPage - TrailingPageCount);
+        RangeEnd = Math.Min(RangeStart + LeadingPageCount, LastPage);
+    }
+}
