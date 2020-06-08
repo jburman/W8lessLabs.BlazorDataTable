@@ -27,24 +27,24 @@ namespace W8lessLabs.BlazorDataTable
                 Func<IOrderedEnumerable<T>, bool, IOrderedEnumerable<T>> applyToOrderedEnumerable)>(StringComparer.OrdinalIgnoreCase);
         }
 
-        public void AddProperty<TProp>(string name)
+        public void AddProperty<TProp>(string name, IComparer<TProp>? comparer = null)
         {
             var paramExpression = Expression.Parameter(typeof(T), "e");
             var memberExpression = Expression.Property(paramExpression, name);
             var applyToQueryable = new Func<IQueryable<T>, bool, IOrderedQueryable<T>>((query, descending) =>
             {
                 if (descending)
-                    return query.OrderByDescending(Expression.Lambda<Func<T, TProp>>(memberExpression, paramExpression));
+                    return query.OrderByDescending(Expression.Lambda<Func<T, TProp>>(memberExpression, paramExpression), comparer);
                 else
-                    return query.OrderBy(Expression.Lambda<Func<T, TProp>>(memberExpression, paramExpression));
+                    return query.OrderBy(Expression.Lambda<Func<T, TProp>>(memberExpression, paramExpression), comparer);
             });
 
             var applyToOrderedQueryable = new Func<IOrderedQueryable<T>, bool, IOrderedQueryable<T>>((query, descending) =>
             {
                 if (descending)
-                    return query.ThenByDescending(Expression.Lambda<Func<T, TProp>>(memberExpression, paramExpression));
+                    return query.ThenByDescending(Expression.Lambda<Func<T, TProp>>(memberExpression, paramExpression), comparer);
                 else
-                    return query.ThenBy(Expression.Lambda<Func<T, TProp>>(memberExpression, paramExpression));
+                    return query.ThenBy(Expression.Lambda<Func<T, TProp>>(memberExpression, paramExpression), comparer);
             });
 
             _sortQueryFuncs[name] = (applyToQueryable, applyToOrderedQueryable);
@@ -53,40 +53,40 @@ namespace W8lessLabs.BlazorDataTable
             var applyToEnumerable = new Func<IEnumerable<T>, bool, IOrderedEnumerable<T>>((enumerable, descending) =>
             {
                 if (descending)
-                    return enumerable.OrderByDescending(Expression.Lambda<Func<T, TProp>>(memberExpression, paramExpression).Compile());
+                    return enumerable.OrderByDescending(Expression.Lambda<Func<T, TProp>>(memberExpression, paramExpression).Compile(), comparer);
                 else
-                    return enumerable.OrderBy(Expression.Lambda<Func<T, TProp>>(memberExpression, paramExpression).Compile());
+                    return enumerable.OrderBy(Expression.Lambda<Func<T, TProp>>(memberExpression, paramExpression).Compile(), comparer);
             });
 
             var applyToOrderedEnumerable = new Func<IOrderedEnumerable<T>, bool, IOrderedEnumerable<T>>((enumerable, descending) =>
             {
                 if (descending)
-                    return enumerable.ThenByDescending(Expression.Lambda<Func<T, TProp>>(memberExpression, paramExpression).Compile());
+                    return enumerable.ThenByDescending(Expression.Lambda<Func<T, TProp>>(memberExpression, paramExpression).Compile(), comparer);
                 else
-                    return enumerable.ThenBy(Expression.Lambda<Func<T, TProp>>(memberExpression, paramExpression).Compile());
+                    return enumerable.ThenBy(Expression.Lambda<Func<T, TProp>>(memberExpression, paramExpression).Compile(), comparer);
             });
 
             _sortEnumFuncs[name] = (applyToEnumerable, applyToOrderedEnumerable);
         }
 
-        public void AddProperty<TProp>(Expression<Func<T, TProp>> expr)
+        public void AddProperty<TProp>(Expression<Func<T, TProp>> expr, IComparer<TProp>? comparer = null)
         {
             var memberExpression = ((MemberExpression)expr.Body);
 
             var applyToQueryable = new Func<IQueryable<T>, bool, IOrderedQueryable<T>>((query, descending) =>
             {
                 if (descending)
-                    return query.OrderByDescending(expr);
+                    return query.OrderByDescending(expr, comparer);
                 else
-                    return query.OrderBy(expr);
+                    return query.OrderBy(expr, comparer);
             });
 
             var applyToOrderedQueryable = new Func<IOrderedQueryable<T>, bool, IOrderedQueryable<T>>((query, descending) =>
             {
                 if (descending)
-                    return query.ThenByDescending(expr);
+                    return query.ThenByDescending(expr, comparer);
                 else
-                    return query.ThenBy(expr);
+                    return query.ThenBy(expr, comparer);
             });
 
             _sortQueryFuncs[memberExpression.Member.Name] = (applyToQueryable, applyToOrderedQueryable);
@@ -95,20 +95,66 @@ namespace W8lessLabs.BlazorDataTable
             var applyToEnumerable = new Func<IEnumerable<T>, bool, IOrderedEnumerable<T>>((enumerable, descending) =>
             {
                 if (descending)
-                    return enumerable.OrderByDescending(expr.Compile());
+                    return enumerable.OrderByDescending(expr.Compile(), comparer);
                 else
-                    return enumerable.OrderBy(expr.Compile());
+                    return enumerable.OrderBy(expr.Compile(), comparer);
             });
 
             var applyToOrderedEnumerable = new Func<IOrderedEnumerable<T>, bool, IOrderedEnumerable<T>>((enumerable, descending) =>
             {
                 if (descending)
-                    return enumerable.ThenByDescending(expr.Compile());
+                    return enumerable.ThenByDescending(expr.Compile(), comparer);
                 else
-                    return enumerable.ThenBy(expr.Compile());
+                    return enumerable.ThenBy(expr.Compile(), comparer);
             });
 
             _sortEnumFuncs[memberExpression.Member.Name] = (applyToEnumerable, applyToOrderedEnumerable);
+        }
+
+        public void AddIndex<TProp>(int index, IComparer<TProp>? comparer = null)
+        {
+            var applyToQueryable = 
+                (Func<IQueryable<T>, bool, IOrderedQueryable<T>>)
+                new Func<IQueryable<TProp[]>, bool, IOrderedQueryable<TProp[]>>((query, descending) =>
+                {
+                    if (descending)
+                        return query.OrderByDescending(e => e[index], comparer);
+                    else
+                        return query.OrderBy(e => e[index], comparer);
+                });
+
+            var applyToOrderedQueryable = 
+                (Func<IOrderedQueryable<T>, bool, IOrderedQueryable<T>>)
+                new Func<IOrderedQueryable<TProp[]>, bool, IOrderedQueryable<TProp[]>>((query, descending) =>
+                {
+                    if (descending)
+                        return query.ThenByDescending(e => e[index], comparer);
+                    else
+                        return query.ThenBy(e => e[index], comparer);
+                });
+            _sortQueryFuncs[index.ToString()] = (applyToQueryable, applyToOrderedQueryable);
+
+            var applyToEnumerable =
+                (Func<IEnumerable<T>, bool, IOrderedEnumerable<T>>)
+                new Func<IEnumerable<TProp[]>, bool, IOrderedEnumerable<TProp[]>>((enumerable, descending) =>
+                {
+                    if (descending)
+                        return enumerable.OrderByDescending(e => e[index], comparer);
+                    else
+                        return enumerable.OrderBy(e => e[index], comparer);
+                });
+
+            var applyToOrderedEnumerable = 
+                (Func<IOrderedEnumerable<T>, bool, IOrderedEnumerable<T>>)
+                new Func<IOrderedEnumerable<TProp[]>, bool, IOrderedEnumerable<TProp[]>>((enumerable, descending) =>
+                {
+                    if (descending)
+                        return enumerable.ThenByDescending(e => e[index], comparer);
+                    else
+                        return enumerable.ThenBy(e => e[index], comparer);
+                });
+
+            _sortEnumFuncs[index.ToString()] = (applyToEnumerable, applyToOrderedEnumerable);
         }
 
         public IQueryable<T> ApplySorts(IQueryable<T> query, IEnumerable<(string name, bool descending)> sorts)

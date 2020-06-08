@@ -1,7 +1,8 @@
 ﻿#nullable enable
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace W8lessLabs.BlazorDataTable
@@ -21,6 +22,8 @@ namespace W8lessLabs.BlazorDataTable
 
         [Parameter] public Expression<Func<TEntity, TProp>>? Property { get; set; }
 
+        [Parameter] public int Index { get; set; }
+
         [Parameter] public string? Title { get; set; }
 
         [Parameter] public bool Sortable { get; set; } = false;
@@ -28,6 +31,8 @@ namespace W8lessLabs.BlazorDataTable
         [Parameter] public SortDirection SortDirection { get; set; } = SortDirection.None;
 
         [Parameter] public int SortOrder { get; set; } = 0;
+
+        [Parameter] public IComparer<TProp>? Comparer { get; set; } = null;
 
         [Parameter] public string Width { get; set; } = string.Empty;
 
@@ -57,7 +62,10 @@ namespace W8lessLabs.BlazorDataTable
                 _colRenderInfo.CustomContentClassCallback = CustomContentClassCallback;
                 _colRenderInfo.CustomHeaderClass = CustomHeaderClass;
                 _colRenderInfo.Render = Render;
-                _colRenderInfo.Property = Property;
+                if (Property is null)
+                    _colRenderInfo.Index = Index;
+                else
+                    _colRenderInfo.Property = Property;
                 _colRenderInfo.Width = Width;
             }
         }
