@@ -27,7 +27,7 @@
 
     public async Task<ReadDataResponse<WeatherForecast>> ReadWeatherAsync(ReadDataRequest<WeatherForecast> request)
     {
-        forecasts = await Http.GetJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
         
         var totalRecords = forecasts.Length;
 
