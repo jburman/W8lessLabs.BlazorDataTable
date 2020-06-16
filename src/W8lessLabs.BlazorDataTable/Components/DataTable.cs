@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Logging;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -28,10 +29,13 @@ namespace W8lessLabs.BlazorDataTable
         public static readonly int DefaultPageSize = 20;
         internal static readonly int[] DefaultPageSizes = new[] { 10, 20, 50 };
 
+        private static int _IdCounter = 0;
+
         private bool _rendered = false;
 
         public DataTable()
         {
+            Id = "w8less-tbl-" + (++_IdCounter);
             Config = new DataTableConfig<TEntity>();
             Columns = new List<ColumnRenderInfo<TEntity>>();
             ReadData = default;
@@ -39,8 +43,13 @@ namespace W8lessLabs.BlazorDataTable
             Process = new DataTableProcess<TEntity>();
         }
 
+        [Parameter]public string Id { get; set; }
+
         [Inject]
         public ILogger<DataTable<TEntity>>? Logger { get; set; }
+
+        [Inject]
+        public IJSRuntime? JSRuntime { get; set; }
 
         public DataTableConfig<TEntity> Config { get; private set; }
 
@@ -148,6 +157,9 @@ namespace W8lessLabs.BlazorDataTable
                     DataSource = new DataTableSource<TEntity>(Process, Config.ReadData ?? new ReadData<TEntity>(_DefaultRead), Columns);
                     await Process.OnReadDataAsync(Page, Config.PageSize);
                 }
+
+                if(JSRuntime is { })
+                    await JSRuntime.InvokeVoidAsync("blazorDataTable.attachEvents", Id);
             }
         }
     }

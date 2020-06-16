@@ -11,17 +11,19 @@
 }
 else
 {
-    <CascadingValue Value="@this">
-        <DataTableHeader TEntity="TEntity"></DataTableHeader>
-        <div class="w8less-theight" style="@(this.TableSizeStyle())">
-            <table role="grid" class="w8less-table">
-                <DataTableBody TEntity="TEntity"></DataTableBody>
-            </table>
-        </div>
-        <DataTableFooter TEntity="TEntity"></DataTableFooter>
-    </CascadingValue>
+    <div id="@Id" class="w8less-tcontainer">
+        <CascadingValue Value="@this">
+            <DataTableHeader TEntity="TEntity"></DataTableHeader>
+            <div class="w8less-theight" style="@(this.TableSizeStyle())">
+                <table role="grid" class="w8less-table">
+                    <DataTableBody TEntity="TEntity"></DataTableBody>
+                </table>
+            </div>
+            <DataTableFooter TEntity="TEntity"></DataTableFooter>
+        </CascadingValue>
+    </div>
 }
-@code 
+@code
 {
     [Parameter] public RenderFragment ChildContent { get; set; }
 }
