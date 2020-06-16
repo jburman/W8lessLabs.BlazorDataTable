@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RazorLangVersion>3.0</RazorLangVersion>
     <LangVersion>8.0</LangVersion>
-    <Version>0.0.1-alpha4</Version>
+    <Version>0.0.1-alpha5</Version>
     <Company>W8lessLabs LLC</Company>
     <Authors>Jeremy Burman</Authors>
     <PackageReleaseNotes>Add scroll handler</PackageReleaseNotes>
